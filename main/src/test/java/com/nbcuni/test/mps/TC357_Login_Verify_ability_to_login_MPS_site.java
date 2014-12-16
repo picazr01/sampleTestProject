@@ -16,8 +16,8 @@ import com.nbcuni.test.webdriver.WebDriverClientExecution;
  */
 public class TC357_Login_Verify_ability_to_login_MPS_site {
 
-    /** The cs. */
-    private CustomWebDriver cs;
+    /** The wd. */
+    private CustomWebDriver wd;
 
     /** The al. */
     private AppLib al;
@@ -35,10 +35,10 @@ public class TC357_Login_Verify_ability_to_login_MPS_site {
     @Parameters({ "Environment", "Site" })
     public void startSelenium(String sEnv, String sSite) {
         try {
-            cs = WebDriverClientExecution.getInstance().getDriver();
-            al = new AppLib(cs);
+            wd = WebDriverClientExecution.getInstance().getDriver();
+            al = new AppLib(wd);
             al.setEnvironmentInfo(sEnv, sSite);
-            ul = new Util(cs);
+            ul = new Util(wd);
         } catch (Exception e) {
             fail(e.toString());
         }
@@ -50,7 +50,7 @@ public class TC357_Login_Verify_ability_to_login_MPS_site {
     @AfterClass(alwaysRun = true)
     public void stopSelenium() {
         try {
-            cs.quit();
+            wd.quit();
         } catch (Exception e) {
             fail(e.toString());
         }

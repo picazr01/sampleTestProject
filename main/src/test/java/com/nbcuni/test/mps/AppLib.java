@@ -65,8 +65,8 @@ public class AppLib {
     /** The Constant TWO_ZERO_ZERO. */
     private static final int TWO_ZERO_ZERO = 200;
 
-    /** The cs. */
-    private static CustomWebDriver cs = null;
+    /** The wd. */
+    private static CustomWebDriver wd = null;
 
     /** The ul. */
     private Util ul = null;
@@ -133,14 +133,14 @@ public class AppLib {
      * 
      * @param cs1 Custom Webdriver
      */
-    public AppLib(CustomWebDriver cs1) {
-        cs = cs1;
-        ul = new Util(cs);
-        wait = new WebDriverWait(cs, WEB_DRIVER_WAIT);
+    public AppLib(CustomWebDriver wd1) {
+        wd = wd1;
+        ul = new Util(wd);
+        wait = new WebDriverWait(wd, WEB_DRIVER_WAIT);
         try {
             loadConfig();
         } catch (Exception e) {
-            new CustomWebDriverException(e, cs);
+            new CustomWebDriverException(e, wd);
         }
     }
 
@@ -172,7 +172,7 @@ public class AppLib {
                 }
             }
         } catch (Exception e) {
-            new CustomWebDriverException(e, cs);
+            new CustomWebDriverException(e, wd);
         }
     }
 
@@ -192,7 +192,7 @@ public class AppLib {
             clientUrl = configProperties.get(environment + ".Client.Url");
             perfApiUrl = configProperties.get("PERF" + ".API.Url");
         } catch (Exception e) {
-            new CustomWebDriverException(e, cs);
+            new CustomWebDriverException(e, wd);
         }
     }
 
@@ -306,10 +306,10 @@ public class AppLib {
         maximizeBrowser();
         logExecutionInfo();
         verifyHTTPResponseCode(this.getSiteURL());
-        cs.openURL(this.getSiteURL());
+        wd.openURL(this.getSiteURL());
         Reporter.log("MPS URL: " + this.getSiteURL());
         Thread.sleep(3000);
-        return new Homepage(cs, this);
+        return new Homepage(wd, this);
     }
 
     /**
@@ -322,7 +322,7 @@ public class AppLib {
         maximizeBrowser();
         final URI file = new File(fileName).toURI();
         Reporter.log("Opened local web file: " + file);
-        cs.openURL(file.toString().replace("file:/", "file://"));
+        wd.openURL(file.toString().replace("file:/", "file://"));
         Thread.sleep(3000);
     }
 
@@ -371,12 +371,12 @@ public class AppLib {
         maximizeBrowser();
         logExecutionInfo();
         verifyHTTPResponseCode(url);
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("**************************************************");
         Reporter.log("Opened Client URL: " + url);
         Reporter.log(" ");
         Thread.sleep(5000);
-        if (closePopupWindowIfExists(cs)) {
+        if (closePopupWindowIfExists(wd)) {
             fail("FAIL: unexpected popup dialog while opening the client page");
         }
     }
@@ -467,7 +467,7 @@ public class AppLib {
      * @throws Exception Code Error
      */
     public final void validateCorrectPageDisplay(String sPagename) throws Exception {
-        String sPage = cs.getTitle();
+        String sPage = wd.getTitle();
         ul.compareTextValues(sPage, sPagename);
     }
 
@@ -479,7 +479,7 @@ public class AppLib {
      * @throws Exception - error
      */
     public final void verifyHtttpResponseForAllLinksOnPage() throws Exception {
-        ArrayList<String> rawLinks = cs.getAllLinksOnPage();
+        ArrayList<String> rawLinks = wd.getAllLinksOnPage();
         for (String xxx : rawLinks) {
             if (xxx.startsWith("http:")) {
                 URL url = new URL(xxx.trim());
@@ -491,7 +491,7 @@ public class AppLib {
                 }
             }
             if (xxx.startsWith("/")) {
-                String baseLocation = cs.getLocation();
+                String baseLocation = wd.getLocation();
                 String baseURL = baseLocation.replace("com/", "com");
                 String rawLinks2 = baseURL + xxx;
                 URL url = new URL(rawLinks2.trim());
@@ -509,7 +509,7 @@ public class AppLib {
      * Maximizes browser window.
      */
     public void maximizeBrowser() {
-        cs.manage().window().maximize();
+        wd.manage().window().maximize();
     }
 
     /**
@@ -562,7 +562,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void refreshBrowser() throws Exception {
-        cs.navigate().refresh();
+        wd.navigate().refresh();
         Reporter.log("Browser refreshed");
     }
 
@@ -574,8 +574,8 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void setBrowserSize(int width, int height) throws Exception {
-        cs.manage().window().setPosition(new Point(0, 0));
-        cs.manage().window().setSize(new Dimension(width, height));
+        wd.manage().window().setPosition(new Point(0, 0));
+        wd.manage().window().setSize(new Dimension(width, height));
         Reporter.log("Resized browser window to " + width + "x" + height);
     }
 
@@ -585,9 +585,9 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void scrollToTopOfPage() throws Exception {
-        JavascriptExecutor js = cs;
+        JavascriptExecutor js = wd;
         js.executeScript("document.location = \"#\";");
-        Reporter.log("Scrolled to object top of page on " + cs.getCurrentUrl());
+        Reporter.log("Scrolled to object top of page on " + wd.getCurrentUrl());
     }
 
     /**
@@ -597,11 +597,11 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void scrollToElementOnPage(String xpath) throws Exception {
-        Locatable element = (Locatable) cs.findElementByXPath(xpath);
+        Locatable element = (Locatable) wd.findElementByXPath(xpath);
         Point p = element.getCoordinates().onPage();
-        JavascriptExecutor js = cs;
+        JavascriptExecutor js = wd;
         js.executeScript("window.scrollTo(" + p.getX() + "," + (p.getY()) + ");");
-        Reporter.log("Scrolled to object " + xpath + " on " + cs.getCurrentUrl());
+        Reporter.log("Scrolled to object " + xpath + " on " + wd.getCurrentUrl());
     }
 
     /**
@@ -612,7 +612,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void scrollToElementOnPage(int x, int y) throws Exception {
-        JavascriptExecutor js = cs;
+        JavascriptExecutor js = wd;
         js.executeScript("window.scrollTo(" + x + "," + y + ");");
     }
 
@@ -622,7 +622,7 @@ public class AppLib {
      * @param url the url
      */
     public void navigateToURL(String url) {
-        cs.navigate().to(url);
+        wd.navigate().to(url);
         Reporter.log("Navigated to " + url);
     }
 
@@ -633,11 +633,11 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void switchToWindow(String windowTitle) throws Exception {
-        Set<String> windows = cs.getWindowHandles();
+        Set<String> windows = wd.getWindowHandles();
         boolean found = false;
         for (String window : windows) {
-            cs.switchTo().window(window);
-            if (cs.getTitle().toLowerCase().contains(windowTitle)) {
+            wd.switchTo().window(window);
+            if (wd.getTitle().toLowerCase().contains(windowTitle)) {
                 Reporter.log("Switched to the window with title " + windowTitle);
                 found = true;
                 break;
@@ -655,10 +655,10 @@ public class AppLib {
      */
     public void switchToWindow() throws Exception {
         // Switch to new window opened
-        for (String winHandle : cs.getWindowHandles()) {
-            cs.switchTo().window(winHandle);
+        for (String winHandle : wd.getWindowHandles()) {
+            wd.switchTo().window(winHandle);
         }
-        Reporter.log("Switched to the window with title " + cs.getTitle() + " and URL " + cs.getLocation());
+        Reporter.log("Switched to the window with title " + wd.getTitle() + " and URL " + wd.getLocation());
     }
 
     /**
@@ -672,7 +672,7 @@ public class AppLib {
     public boolean waitForObject(String xpath, int timeoutInSec) throws Exception {
         boolean found = false;
         for (int i = 0; i < timeoutInSec; i++) {
-            int count = cs.findElementsByXPath(xpath).size();
+            int count = wd.findElementsByXPath(xpath).size();
             if (count > 0) {
                 found = true;
                 break;
@@ -689,7 +689,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     static void waitForAllAjaxCalls(int secondsTimeout) throws Exception {
-        JavascriptExecutor js = cs;
+        JavascriptExecutor js = wd;
         int count = 1;
         while (true) {
             Boolean ajaxIsComplete = (Boolean) js.executeScript("return jQuery.active == 0");
@@ -725,9 +725,9 @@ public class AppLib {
     public boolean scrollDownToObject(String xpath, int timeoutInSec) throws Exception {
         boolean found = false;
         for (int i = 0; i < timeoutInSec; i++) {
-            JavascriptExecutor js = cs;
+            JavascriptExecutor js = wd;
             js.executeScript("window.scrollTo(0, document.body.offsetHeight)");
-            int count = cs.findElementsByXPath(xpath).size();
+            int count = wd.findElementsByXPath(xpath).size();
             if (count > 0) {
                 found = true;
                 break;
@@ -892,9 +892,9 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void clickModifyButtonIfExists(String xpath) throws Exception {
-        int count = cs.findElementsByXPath(xpath).size();
+        int count = wd.findElementsByXPath(xpath).size();
         if (count == 1) {
-            cs.click(xpath);
+            wd.click(xpath);
             Reporter.log("Clicked on Modify button");
         }
     }
@@ -907,7 +907,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void typeTextInTextAreaObject(String xpath, String text) throws Exception {
-        WebElement textArea = cs.findElement(By.xpath(xpath));
+        WebElement textArea = wd.findElement(By.xpath(xpath));
         textArea.sendKeys(text);
     }
 
@@ -919,7 +919,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public String getValueUsingJavaScript(String jsCommand) throws Exception {
-        JavascriptExecutor js = cs;
+        JavascriptExecutor js = wd;
         String value = "";
         try {
             value = js.executeScript(jsCommand).toString();
@@ -954,7 +954,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public void executeJavaScript(String jsCommand) throws Exception {
-        JavascriptExecutor js = cs;
+        JavascriptExecutor js = wd;
         js.executeScript(jsCommand);
         Reporter.log(" ");
         Reporter.log("Executed JavaScript command [" + jsCommand + "]");
@@ -1001,7 +1001,7 @@ public class AppLib {
      * @return the browser user agent string
      */
     public String getBrowserUserAgentString() {
-        String s = (String) ((JavascriptExecutor) cs).executeScript("return navigator.userAgent;");
+        String s = (String) ((JavascriptExecutor) wd).executeScript("return navigator.userAgent;");
         return s;
     }
 
@@ -1066,7 +1066,7 @@ public class AppLib {
     public ArrayList<String> getURLFromNetworkTraffic(String domain) throws Exception {
         ArrayList<String> urlList = new ArrayList<String>();
         Reporter.log("get url from network traffic for " + domain);
-        ArrayList<HashMap<String, String>> tempHar = cs.getHarInfoByDomain(domain);
+        ArrayList<HashMap<String, String>> tempHar = wd.getHarInfoByDomain(domain);
         for (HashMap<String, String> x : tempHar) {
             CaptureNetworkTraffic.getInstance();
             Reporter.log("\nRequest URL: " + x.get(CaptureNetworkTraffic.REQUEST_URL));
@@ -1136,7 +1136,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public String getPageURL(boolean destroy) throws Exception {
-        String currentURL = cs.getCurrentUrl();
+        String currentURL = wd.getCurrentUrl();
         String pageURL = currentURL.replace(getSiteURL(), "");
         if (destroy) {
             pageURL = pageURL.replace("modify", "destroy");
@@ -1201,10 +1201,10 @@ public class AppLib {
     public void enterLiveDate(String date, String xpath) throws Exception {
         if (date.isEmpty()) {
             String today = getFormattedDate();
-            cs.type(xpath, today);
+            wd.type(xpath, today);
             Reporter.log("Typed live date: " + today);
         } else {
-            cs.type(xpath, date);
+            wd.type(xpath, date);
             Reporter.log("Typed live date: " + date);
         }
     }
@@ -1219,10 +1219,10 @@ public class AppLib {
     public void enterLiveTime(String time, String xpath) throws Exception {
         if (time.isEmpty()) {
             String now = getTimeNow();
-            cs.type(xpath, now);
+            wd.type(xpath, now);
             Reporter.log("Typed live time: " + now);
         } else {
-            cs.type(xpath, time);
+            wd.type(xpath, time);
             Reporter.log("Typed live time: " + time);
         }
     }
@@ -1237,10 +1237,10 @@ public class AppLib {
     public void enterHideDate(String date, String xpath) throws Exception {
         if (date.isEmpty()) {
             String tomorrow = getTomorrowsDate();
-            cs.type(xpath, tomorrow);
+            wd.type(xpath, tomorrow);
             Reporter.log("Typed hide date: " + tomorrow);
         } else {
-            cs.type(xpath, date);
+            wd.type(xpath, date);
             Reporter.log("Typed hide date: " + date);
         }
     }
@@ -1255,10 +1255,10 @@ public class AppLib {
     public void enterHideTime(String time, String xpath) throws Exception {
         if (time.isEmpty()) {
             String now = "12:00AM";
-            cs.type(xpath, now);
+            wd.type(xpath, now);
             Reporter.log("Typed hide time: " + now);
         } else {
-            cs.type(xpath, time);
+            wd.type(xpath, time);
             Reporter.log("Typed hide time: " + time);
         }
     }
@@ -1271,7 +1271,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public String getHeadAdditions(String input) throws Exception {
-        String value = cs.getText(input);
+        String value = wd.getText(input);
         return value;
     }
 
@@ -1283,7 +1283,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public String getHeaderAdditions(String input) throws Exception {
-        String value = cs.getText(input);
+        String value = wd.getText(input);
         return value;
     }
 
@@ -1295,7 +1295,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public String getFooterAdditions(String input) throws Exception {
-        String value = cs.getText(input);
+        String value = wd.getText(input);
         return value;
     }
 
@@ -1307,7 +1307,7 @@ public class AppLib {
      * @throws Exception the exception
      */
     public String getBodyTagAdditions(String input) throws Exception {
-        String value = cs.getText(input);
+        String value = wd.getText(input);
         return value;
     }
 
@@ -1321,9 +1321,9 @@ public class AppLib {
      */
     public void typeHeadAdditions(String modify, String input, String additions) throws Exception {
         String headAdditions = getHeadAdditions(input);
-        cs.click(modify);
+        wd.click(modify);
         Reporter.log("Clicked button to modify Head Additions");
-        cs.type(input, additions + headAdditions);
+        wd.type(input, additions + headAdditions);
         Reporter.log("Typed Head Additions: " + wrapHTMLCodeWithXMPTag(additions + headAdditions));
     }
 
@@ -1337,9 +1337,9 @@ public class AppLib {
      */
     public void typeHeaderAdditions(String modify, String input, String additions) throws Exception {
         String headerAdditions = getHeaderAdditions(input);
-        cs.click(modify);
+        wd.click(modify);
         Reporter.log("Clicked button to modify Header Additions");
-        cs.type(input, additions + headerAdditions);
+        wd.type(input, additions + headerAdditions);
         Reporter.log("Typed Header Additions: " + wrapHTMLCodeWithXMPTag(additions + headerAdditions));
     }
 
@@ -1353,9 +1353,9 @@ public class AppLib {
      */
     public void typeFooterAdditions(String modify, String input, String additions) throws Exception {
         String footerAdditions = getHeadAdditions(input);
-        cs.click(modify);
+        wd.click(modify);
         Reporter.log("Clicked button to modify Footer Additions");
-        cs.type(input, additions + footerAdditions);
+        wd.type(input, additions + footerAdditions);
         Reporter.log("Typed Footer Additions: " + wrapHTMLCodeWithXMPTag(additions + footerAdditions));
     }
 
@@ -1369,9 +1369,9 @@ public class AppLib {
      */
     public void typeBodyTagAdditions(String modify, String input, String additions) throws Exception {
         String bodyTagAdditions = getBodyTagAdditions(input);
-        cs.click(modify);
+        wd.click(modify);
         Reporter.log("Clicked button to modify Body Tag Additions");
-        cs.type(input, additions + bodyTagAdditions);
+        wd.type(input, additions + bodyTagAdditions);
         Reporter.log("Typed Body Tag Additions: " + wrapHTMLCodeWithXMPTag(additions + bodyTagAdditions));
     }
 
@@ -1453,7 +1453,7 @@ public class AppLib {
         HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
         int code = connection.getResponseCode();
         if ((code != TWO_ZERO_ZERO)) {
-            fail("Fail: page Response Code: " + code + ". URL: " + cs.getCurrentUrl());
+            fail("Fail: page Response Code: " + code + ". URL: " + wd.getCurrentUrl());
         } else {
             Reporter.log("Page Response Code: " + code);
         }

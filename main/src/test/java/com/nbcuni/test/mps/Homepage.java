@@ -36,8 +36,8 @@ import com.nbcuni.test.webdriver.CustomWebDriver;
 
 public class Homepage {
 
-    /** The cs. */
-    private static CustomWebDriver cs;
+    /** The wd. */
+    private static CustomWebDriver wd;
 
     /** The al. */
     private static AppLib al;
@@ -348,9 +348,9 @@ public class Homepage {
      *            the al2
      */
     public Homepage(final CustomWebDriver custWebDr, final AppLib al2) {
-        cs = custWebDr;
+        wd = custWebDr;
         al = al2;
-        ul = new Util(cs);
+        ul = new Util(wd);
         try {
             // Thread.sleep(3000);
         } catch (Exception e) {
@@ -366,12 +366,12 @@ public class Homepage {
      */
     public void clickSiteButton() throws Exception {
         try {
-            cs.click(siteButton.replace("xx", al.getSiteName()));
+            wd.click(siteButton.replace("xx", al.getSiteName()));
             Reporter.log("Clicked on site button " + al.getSiteName());
         } catch (Exception e) {
-            String url = cs.getLocation();
-            String title = cs.getTitle();
-            String html = cs.getAttribute("//body", "outerHTML");
+            String url = wd.getLocation();
+            String title = wd.getTitle();
+            String html = wd.getAttribute("//body", "outerHTML");
             String msg = "url=" + url + " pageTitle=" + title + " html=" + html;
             fail("Clicking on site " + al.getSiteName() + " failed. " + msg + " [" + e.toString() + "]");
         }
@@ -387,14 +387,14 @@ public class Homepage {
      */
     public void clickSiteButton(String siteName) throws Exception {
         try {
-            cs.click(siteButton.replace("xx", siteName));
+            wd.click(siteButton.replace("xx", siteName));
             al.setSiteName(siteName);
             Reporter.log("Clicked on site button: " + siteName);
             Thread.sleep(3000);
         } catch (Exception e) {
-            String url = cs.getLocation();
-            String title = cs.getTitle();
-            String html = cs.getAttribute("//body", "outerHTML");
+            String url = wd.getLocation();
+            String title = wd.getTitle();
+            String html = wd.getAttribute("//body", "outerHTML");
             String msg = "url=" + url + " pageTitle=" + title + " html=" + html;
             fail("Clicking on site " + al.getSiteName() + " failed. " + msg + " [" + e.toString() + "]");
         }
@@ -407,7 +407,7 @@ public class Homepage {
      *             the exception
      */
     public void clickLogonToMPSLink() throws Exception {
-        cs.click(headerLinkLoginToMPS);
+        wd.click(headerLinkLoginToMPS);
         Reporter.log("Clicked on Login to MPS link");
     }
 
@@ -418,7 +418,7 @@ public class Homepage {
      *             the exception
      */
     public void clickLogoutLink() throws Exception {
-        cs.click(Header_Link_Logout);
+        wd.click(Header_Link_Logout);
         Reporter.log("Clicked on Logout link");
     }
 
@@ -429,7 +429,7 @@ public class Homepage {
      *             the exception
      */
     public void clickChangeSiteLink() throws Exception {
-        cs.click(headerLinkChangeSite);
+        wd.click(headerLinkChangeSite);
         Reporter.log("Clicked on Change Site link");
     }
 
@@ -440,7 +440,7 @@ public class Homepage {
      *             the exception
      */
     public void clickSignInWithGoogleButton() throws Exception {
-        cs.click(loginButtonSignOnUsingGoogle);
+        wd.click(loginButtonSignOnUsingGoogle);
         Reporter.log("Clicked on Google Sign On button");
     }
 
@@ -451,11 +451,11 @@ public class Homepage {
      *             the exception
      */
     public void enterGoogleAdministratorCredentials() throws Exception {
-        cs.type(googleLoginInputUserName, al.getAdministratorUserName());
+        wd.type(googleLoginInputUserName, al.getAdministratorUserName());
         Thread.sleep(2000);
-        cs.type(googleLoginInputPassword, al.getAdministratorUserPassword());
+        wd.type(googleLoginInputPassword, al.getAdministratorUserPassword());
         Thread.sleep(2000);
-        cs.click(googleLoginButtonSignIn);
+        wd.click(googleLoginButtonSignIn);
         Reporter.log("Entered Google administrator credentials for " + al.getAdministratorUserName()
                 + " and clicked sign in");
     }
@@ -467,11 +467,11 @@ public class Homepage {
      *             the exception
      */
     public void enterGoogleLimitedCredentials() throws Exception {
-        cs.type(googleLoginInputUserName, al.getLimitedUserName());
+        wd.type(googleLoginInputUserName, al.getLimitedUserName());
         Thread.sleep(2000);
-        cs.type(googleLoginInputPassword, al.getLimitedUserPassword());
+        wd.type(googleLoginInputPassword, al.getLimitedUserPassword());
         Thread.sleep(2000);
-        cs.click(googleLoginButtonSignIn);
+        wd.click(googleLoginButtonSignIn);
         Reporter.log("Entered Google limited credentials for " + al.getLimitedUserName() + " and clicked sign in");
     }
 
@@ -482,10 +482,10 @@ public class Homepage {
      *             the exception
      */
     public void checkIfGoogleAPIErrorExists() throws Exception {
-        String title = cs.getTitle();
+        String title = wd.getTitle();
         if (title.contains("exception")) {
-            String pageSource = cs.findElement(By.tagName("body")).getText();
-            fail("Google API Error: " + pageSource + " URL: " + cs.getLocation());
+            String pageSource = wd.findElement(By.tagName("body")).getText();
+            fail("Google API Error: " + pageSource + " URL: " + wd.getLocation());
         }
     }
 
@@ -500,11 +500,11 @@ public class Homepage {
      *             the exception
      */
     public void enterGoogleCredentials(String user, String password) throws Exception {
-        cs.type(googleLoginInputUserName, user);
+        wd.type(googleLoginInputUserName, user);
         Thread.sleep(2000);
-        cs.type(googleLoginInputPassword, password);
+        wd.type(googleLoginInputPassword, password);
         Thread.sleep(2000);
-        cs.click(googleLoginButtonSignIn);
+        wd.click(googleLoginButtonSignIn);
         Reporter.log("Entered Google credentials for " + user + " and clicked sign in");
     }
 
@@ -515,12 +515,12 @@ public class Homepage {
      *             the exception
      */
     public void enterGoogleValidationIfRequested() throws Exception {
-        int count = cs.findElementsByXPath(googleLoginVerificationMethod).size();
+        int count = wd.findElementsByXPath(googleLoginVerificationMethod).size();
         if (count > 0) {
-            cs.click(googleLoginVerificationMethod);
-            cs.click(googleLoginVerificationMethodOptionEmail);
-            cs.type(GoogleLogin_VerificationMethod_Input_Email, "robert.picazo@nbcuni.com");
-            cs.click(GoogleLogin_VerificationMethod_Button_Continue);
+            wd.click(googleLoginVerificationMethod);
+            wd.click(googleLoginVerificationMethodOptionEmail);
+            wd.type(GoogleLogin_VerificationMethod_Input_Email, "robert.picazo@nbcuni.com");
+            wd.click(GoogleLogin_VerificationMethod_Button_Continue);
             Reporter.log("Google Verification - completed Google verification");
         }
     }
@@ -534,13 +534,13 @@ public class Homepage {
      *             the exception
      */
     public void googleRequestPermission(Boolean access) throws Exception {
-        String title = cs.getTitle();
+        String title = wd.getTitle();
         if (title.contains("request")) {
             if (access) {
                 if (!al.waitForObject(googleLoginButtonMPSAccept, 2)) {
                     enterGoogleValidationIfRequested();
                 }
-                List<WebElement> mpsAccept = cs.findElementsByXPath(googleLoginButtonMPSAccept);
+                List<WebElement> mpsAccept = wd.findElementsByXPath(googleLoginButtonMPSAccept);
                 if (mpsAccept.size() != 0) {
                     mpsAccept.get(0).click();
                     Reporter.log("Clicked on Google Accept button");
@@ -550,7 +550,7 @@ public class Homepage {
                 if (!al.waitForObject(googleLoginButtonMPSCancel, 30)) {
                     enterGoogleValidationIfRequested();
                 }
-                List<WebElement> mpsCancel = cs.findElementsByXPath(googleLoginButtonMPSCancel);
+                List<WebElement> mpsCancel = wd.findElementsByXPath(googleLoginButtonMPSCancel);
                 if (mpsCancel.size() != 0) {
                     mpsCancel.get(0).click();
                     Reporter.log("Clicked on Google Cancel button");
@@ -567,7 +567,7 @@ public class Homepage {
      *             the exception
      */
     public void verifyHomepageAccess() throws Exception {
-        if (!cs.getText(Section_ActionItems_Header).contains("MPS Action Items")) {
+        if (!wd.getText(Section_ActionItems_Header).contains("MPS Action Items")) {
             fail("Homepage did not load.");
         }
         Reporter.log("Homepage displayed");
@@ -580,7 +580,7 @@ public class Homepage {
      *            the user
      */
     public void verifyUserIsLoggedOn(String user) {
-        String text = cs.getText(Header_Label_UserName);
+        String text = wd.getText(Header_Label_UserName);
         if (text.contains(user)) {
             Reporter.log("User " + user + " is logged on");
         } else {
@@ -595,7 +595,7 @@ public class Homepage {
      *            the user
      */
     public void verifyUserIsLoggedOff(String user) {
-        String text = cs.getText(Header_Label_UserName);
+        String text = wd.getText(Header_Label_UserName);
         if (text.contains(user)) {
             fail("User " + user + " was not logged off");
         } else {
@@ -611,9 +611,9 @@ public class Homepage {
      *             the exception
      */
     public Pages clickPagesTab() throws Exception {
-        cs.click(Header_Page_Tab);
+        wd.click(Header_Page_Tab);
         Reporter.log("Click on Pages tab");
-        return new Pages(cs, al);
+        return new Pages(wd, al);
     }
 
     /**
@@ -625,9 +625,9 @@ public class Homepage {
      */
     public Pages openPage(String id) throws Exception {
         String url = al.getSiteURL() + urlEditPage + id;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Page Edit from URL: " + url);
-        return new Pages(cs, al);
+        return new Pages(wd, al);
     }
 
     /**
@@ -639,9 +639,9 @@ public class Homepage {
      */
     public Sections openSection(String id) throws Exception {
         String url = al.getSiteURL() + urlEditSection + id;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Section Edit from URL: " + url);
-        return new Sections(cs, al);
+        return new Sections(wd, al);
     }
 
     /**
@@ -653,9 +653,9 @@ public class Homepage {
      */
     public ContentTypes openContentType(String id) throws Exception {
         String url = al.getSiteURL() + urlEditContentType + id;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Content Type Edit from URL: " + url);
-        return new ContentTypes(cs, al);
+        return new ContentTypes(wd, al);
     }
 
     /**
@@ -667,9 +667,9 @@ public class Homepage {
      */
     public Packages openPackage(String id) throws Exception {
         String url = al.getSiteURL() + urlEditPackage + id;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Package Edit from URL: " + url);
-        return new Packages(cs, al);
+        return new Packages(wd, al);
     }
 
     /**
@@ -680,9 +680,9 @@ public class Homepage {
      */
     public GlobalDefaults openGlobalDefaults() throws Exception {
         String url = al.getSiteURL() + urlGlobalDefaultsPage;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Global Defaults from URL: " + url);
-        return new GlobalDefaults(cs, al);
+        return new GlobalDefaults(wd, al);
     }
 
     /**
@@ -693,9 +693,9 @@ public class Homepage {
      */
     public Components openComponents() throws Exception {
         String url = al.getSiteURL() + urlComponentsPage;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Components from URL: " + url);
-        return new Components(cs, al);
+        return new Components(wd, al);
     }
 
     /**
@@ -706,9 +706,9 @@ public class Homepage {
      */
     public DartAdUnits openDartAdUnits() throws Exception {
         String url = al.getSiteURL() + urlDartAdUnits;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access Dart Ad Units from URL: " + url);
-        return new DartAdUnits(cs, al);
+        return new DartAdUnits(wd, al);
     }
 
     /**
@@ -719,9 +719,9 @@ public class Homepage {
      */
     public MPSAccounts openMPSAccounts() throws Exception {
         String url = al.getSiteURL() + urlMPSAccountsAuth2;
-        cs.openURL(url);
+        wd.openURL(url);
         Reporter.log("Access MPS Accounts from URL: " + url);
-        return new MPSAccounts(cs, al);
+        return new MPSAccounts(wd, al);
     }
 
     /**
@@ -732,9 +732,9 @@ public class Homepage {
      *             the exception
      */
     public Sections clickSectionsTab() throws Exception {
-        cs.click(Header_Sections_Tab);
+        wd.click(Header_Sections_Tab);
         Reporter.log("Click on Sections tab");
-        return new Sections(cs, al);
+        return new Sections(wd, al);
     }
 
     /**
@@ -745,10 +745,10 @@ public class Homepage {
      *             the exception
      */
     public ContentTypes clickContentTypesTab() throws Exception {
-        cs.click(Header_ContentTypes_Tab);
+        wd.click(Header_ContentTypes_Tab);
         Reporter.log("Click on Content Types tab");
         Thread.sleep(3000);
-        return new ContentTypes(cs, al);
+        return new ContentTypes(wd, al);
     }
 
     /**
@@ -759,9 +759,9 @@ public class Homepage {
      *             the exception
      */
     public Packages clickPackagesTab() throws Exception {
-        cs.click(Header_Packages_Tab);
+        wd.click(Header_Packages_Tab);
         Reporter.log("Click on Packages tab");
-        return new Packages(cs, al);
+        return new Packages(wd, al);
     }
 
     /**
@@ -772,9 +772,9 @@ public class Homepage {
      *             the exception
      */
     public Globals clickGlobalsTab() throws Exception {
-        cs.click(Header_Globals_Tab);
+        wd.click(Header_Globals_Tab);
         Reporter.log("Click on Globals tab");
-        return new Globals(cs, al);
+        return new Globals(wd, al);
     }
 
     /**
@@ -785,9 +785,9 @@ public class Homepage {
      *             the exception
      */
     public Scheduling clickSchedulingTab() throws Exception {
-        cs.click(Header_Scheduling_Tab);
+        wd.click(Header_Scheduling_Tab);
         Reporter.log("Click on Scheduling tab");
-        return new Scheduling(cs, al);
+        return new Scheduling(wd, al);
     }
 
     /**
@@ -798,9 +798,9 @@ public class Homepage {
      *             the exception
      */
     public LogsAndTools clickLogsandToolsTab() throws Exception {
-        cs.click(Header_LogsandTools_Tab);
+        wd.click(Header_LogsandTools_Tab);
         Reporter.log("Click on Logs and Tools tab");
-        return new LogsAndTools(cs, al);
+        return new LogsAndTools(wd, al);
     }
 
     /**
@@ -853,7 +853,7 @@ public class Homepage {
      *             the exception
      */
     public String selectRandomSite() throws Exception {
-        List<WebElement> sites = cs.findElementsByXPath(siteButtonList.replace("[xx]", ""));
+        List<WebElement> sites = wd.findElementsByXPath(siteButtonList.replace("[xx]", ""));
         int num = al.getRandomNumber(0, sites.size());
         String siteName = sites.get(num).getText();
         clickSiteButton(siteName);
@@ -867,7 +867,7 @@ public class Homepage {
      * @throws Exception the exception
      */
     public String getRandomSite() throws Exception {
-        List<WebElement> sites = cs.findElementsByXPath(siteButtonList.replace("[xx]", ""));
+        List<WebElement> sites = wd.findElementsByXPath(siteButtonList.replace("[xx]", ""));
         int num = al.getRandomNumber(0, sites.size());
         String siteName = sites.get(num).getText();
         return siteName;
@@ -896,8 +896,8 @@ public class Homepage {
      *             the exception
      */
     public void verifyHeaderSiteName(String expected) throws Exception {
-        Reporter.log("Verify header site name '" + expected.toUpperCase() + "' on " + cs.getLocation());
-        String actual = cs.getText(headerLabelSiteName);
+        Reporter.log("Verify header site name '" + expected.toUpperCase() + "' on " + wd.getLocation());
+        String actual = wd.getText(headerLabelSiteName);
         ul.verifyAndCompareTextValues(actual.toLowerCase(), expected.toLowerCase());
     }
 
@@ -909,7 +909,7 @@ public class Homepage {
      */
     public void verifyMPSAuthenticationErrorMsgDisplays() throws Exception {
         Reporter.log("Verify MPS authentication error msg displays");
-        String actualMsg = cs.getText(loginLabelError).replace("\n", "").replace("\r", "");
+        String actualMsg = wd.getText(loginLabelError).replace("\n", "").replace("\r", "");
         String expectedMsg =
                 "Your Google account has not been configured for MPS access yet. || You have been logged out of MPS.Have a nice day!";
         ul.verifyTextContainsExpectedText(expectedMsg, actualMsg);
@@ -923,12 +923,12 @@ public class Homepage {
      */
     public void logOutAndLogInAsLimited() throws Exception {
         Reporter.log("Logging out " + al.getAdministratorUserName() + " and logging in " + al.getLimitedUserName());
-        cs.openURL(GoogleLogin_Logout_URL);
+        wd.openURL(GoogleLogin_Logout_URL);
         Reporter.log("Going to URL " + GoogleLogin_Logout_URL);
         Thread.sleep(5000);
-        cs.click(GoogleLogin_ChooseAccount);
+        wd.click(GoogleLogin_ChooseAccount);
         Reporter.log("Clicked button for 'Sign in with a different account'");
-        cs.click(GoogleLogin_AddAccount);
+        wd.click(GoogleLogin_AddAccount);
         Reporter.log("Clicked button for 'Add account'");
         enterGoogleLimitedCredentials();
         Reporter.log("Returning to MPS");
@@ -937,25 +937,25 @@ public class Homepage {
         clickLogonToMPSLink();
         clickSignInWithGoogleButton();
         Thread.sleep(5000);
-        if (cs.findElementsByXPath(googleLoginButtonMPSAccept).size() == 1) {
-            cs.click(googleLoginButtonMPSAccept);
+        if (wd.findElementsByXPath(googleLoginButtonMPSAccept).size() == 1) {
+            wd.click(googleLoginButtonMPSAccept);
         }
-        if (cs.getText(GoogleLogin_Text_PageContent).contains("Unable to get refresh token")) {
+        if (wd.getText(GoogleLogin_Text_PageContent).contains("Unable to get refresh token")) {
             Reporter.log("Unable to get refresh token. Revoking Google access and trying again.");
-            cs.click(GoogleLogin_Link_RevokeAccess);
+            wd.click(GoogleLogin_Link_RevokeAccess);
             Reporter.log("Clicked Revoke Access link");
             Thread.sleep(5000);
             al.switchToWindow();
-            cs.click(GoogleLogin_AccountSecurity_Button_RevokeAccess);
+            wd.click(GoogleLogin_AccountSecurity_Button_RevokeAccess);
             Reporter.log("Clicked button on Google Account Security page for 'Revoke Access'");
             Thread.sleep(1000);
-            cs.click(GoogleLogin_AccountSecurity_Button_OK);
+            wd.click(GoogleLogin_AccountSecurity_Button_OK);
             Reporter.log("Accepted popup");
             al.openSite();
             clickLogonToMPSLink();
             clickSignInWithGoogleButton();
             Thread.sleep(5000);
-            cs.click(googleLoginButtonMPSAccept);
+            wd.click(googleLoginButtonMPSAccept);
         }
     }
 
@@ -967,7 +967,7 @@ public class Homepage {
      */
     public void openDBUpdatePage() throws Exception {
         String url = al.getSiteURL() + "/updates";
-        cs.openURL(url);
+        wd.openURL(url);
         Thread.sleep(5000);
     }
 
@@ -978,16 +978,16 @@ public class Homepage {
      * @throws Exception the exception
      */
     public final void checkDBUpdates() throws Exception {
-        if (cs.isVisible(DBUpdate_Header_Label_Updated)) {
-            String msg = cs.getText(DBUpdate_Header_Label_Updated);
+        if (wd.isVisible(DBUpdate_Header_Label_Updated)) {
+            String msg = wd.getText(DBUpdate_Header_Label_Updated);
             Reporter.log("No Action Required. " + msg);
         } else {
-            int count = cs.findElementsByXPath(DBUpdate_Table_Rows.replace("[xx]", "")).size();
+            int count = wd.findElementsByXPath(DBUpdate_Table_Rows.replace("[xx]", "")).size();
             if (count > 1) {
                 fail((count - 1) + " database updates exists and MUST BE executed manually. "
-                        + "Please access the folowing URL and click on the Run All Updates button. " + cs.getLocation());
+                        + "Please access the folowing URL and click on the Run All Updates button. " + wd.getLocation());
             } else {
-                fail("Invalid response for DB updates. " + cs.getLocation());
+                fail("Invalid response for DB updates. " + wd.getLocation());
             }
         }
     }
@@ -999,7 +999,7 @@ public class Homepage {
      */
     public String[] getSites() {
         List<String> siteNames = new LinkedList<String>();
-        List<WebElement> sites = cs.findElementsByXPath(siteButtonList.replace("[xx]", ""));
+        List<WebElement> sites = wd.findElementsByXPath(siteButtonList.replace("[xx]", ""));
         for (WebElement site : sites) {
             siteNames.add(site.getText());
         }
@@ -1010,7 +1010,7 @@ public class Homepage {
      * Click home page header logo.
      */
     public void clickHomePageHeaderLogo() {
-        cs.click(Header_Link_MPS_Home);
+        wd.click(Header_Link_MPS_Home);
         Reporter.log("Navigate to Home Page");
     }
 
@@ -1022,11 +1022,11 @@ public class Homepage {
      * @throws Exception the exception
      */
     public Pages homepageSearchForContent(String content) throws Exception {
-        WebElement element = cs.findElementByXPath(Site_Search_Input);
+        WebElement element = wd.findElementByXPath(Site_Search_Input);
         element.sendKeys(content);
         element.submit();
         Reporter.log("Searched for " + "'" + content + "'" + " content on Home Page");
-        return new Pages(cs, al);
+        return new Pages(wd, al);
     }
 
     /**
@@ -1038,7 +1038,7 @@ public class Homepage {
     public QuickSearch launchQuickSearchPage() throws Exception {
         homepageSearchForContent("dummydata");
         Reporter.log("Loaded Quick Search page");
-        return new QuickSearch(cs, al);
+        return new QuickSearch(wd, al);
     }
 
     /**
@@ -1048,7 +1048,7 @@ public class Homepage {
      * @return the button mode
      */
     public String getButtonMode(String xpath) {
-        String mode = cs.getAttribute(xpath, "class");
+        String mode = wd.getAttribute(xpath, "class");
         if (mode.contains("enabled")) {
             return "enabled";
         } else if (mode.contains("disabled")) {
@@ -1076,7 +1076,7 @@ public class Homepage {
      * @throws Exception the exception
      */
     public void clickDebugMode() throws Exception {
-        cs.click(Section_MPSMode_Button_DebugMode);
+        wd.click(Section_MPSMode_Button_DebugMode);
         Reporter.log("Clicked 'Debug Mode' button on MPS Mode Overview");
         Thread.sleep(2000);
     }
@@ -1112,7 +1112,7 @@ public class Homepage {
      * @throws Exception the exception
      */
     public void clickMPSOverlay() throws Exception {
-        cs.click(Section_MPSMode_Button_MPSOverlay);
+        wd.click(Section_MPSMode_Button_MPSOverlay);
         Reporter.log("Clicked 'MPS Overlay' button on MPS Mode Overview");
         Thread.sleep(2000);
     }
@@ -1137,7 +1137,7 @@ public class Homepage {
      * @throws Exception the exception
      */
     public void clickInstanceRedirect() throws Exception {
-        cs.click(Section_MPSMode_Button_InstanceRedirect);
+        wd.click(Section_MPSMode_Button_InstanceRedirect);
         Reporter.log("Clicked 'Instance Redirect' button on MPS Mode Overview");
         Thread.sleep(2000);
     }
@@ -1149,13 +1149,13 @@ public class Homepage {
      * @param acceptPopup the accept popup
      */
     public void enterInstanceRedirect(String site, boolean acceptPopup) {
-        cs.type(Section_MPSMode_InstanceRedirect_Input, site);
+        wd.type(Section_MPSMode_InstanceRedirect_Input, site);
         Reporter.log("Typed '" + site + "' for instance redirect");
         if (acceptPopup) {
-            cs.click(Section_MPSMode_Popup_Button_OK);
+            wd.click(Section_MPSMode_Popup_Button_OK);
             Reporter.log("Submitted instance redirect");
         } else {
-            cs.click(Section_MPSMode_InstanceRedirect_Cancel);
+            wd.click(Section_MPSMode_InstanceRedirect_Cancel);
             Reporter.log("Canceled instance redirect");
         }
     }
@@ -1177,7 +1177,7 @@ public class Homepage {
      * @return the instance redirect button text
      */
     public String getInstanceRedirectButtonText() {
-        String text = cs.getText(Section_MPSMode_Button_InstanceRedirect);
+        String text = wd.getText(Section_MPSMode_Button_InstanceRedirect);
         Reporter.log("Instance Redirect = " + text);
         return text;
     }
@@ -1209,7 +1209,7 @@ public class Homepage {
      * @param state the state
      */
     public void verifyMPSModeLabel(String mode, String state) {
-        String text = cs.getText(Section_MPSMode_Label_Status).toLowerCase();
+        String text = wd.getText(Section_MPSMode_Label_Status).toLowerCase();
         ul.verifyTextContainsExpectedText(text, mode);
         ul.verifyTextContainsExpectedText(text, state);
     }
@@ -1220,7 +1220,7 @@ public class Homepage {
      * @throws Exception the exception
      */
     public void clickMPSCookiesButton() throws Exception {
-        cs.click(Section_MPSMode_Button_MPSCookies);
+        wd.click(Section_MPSMode_Button_MPSCookies);
         Reporter.log("Click 'mps cookies' button");
         Thread.sleep(2000);
     }
@@ -1232,7 +1232,7 @@ public class Homepage {
      * @param mode the mode
      */
     public void verifyMPSCookies(String cookies, String mode) {
-        String text = cs.getText(Section_MPSMode_Text_MPSCookies);
+        String text = wd.getText(Section_MPSMode_Text_MPSCookies);
         if (mode.equals("enabled")) {
             ul.verifyTextContainsExpectedText(text, cookies);
         } else if (mode.equals("disabled")) {
@@ -1250,7 +1250,7 @@ public class Homepage {
      * Close mps cookies popup.
      */
     public void closeMPSCookiesPopup() {
-        cs.click(Section_MPSMode_Popup_Button_OK);
+        wd.click(Section_MPSMode_Popup_Button_OK);
     }
 
     /**
@@ -1259,7 +1259,7 @@ public class Homepage {
      * @throws Exception the exception
      */
     public void clickClearCookiesButton() throws Exception {
-        cs.click(Section_MPSMode_Button_ClearCookies);
+        wd.click(Section_MPSMode_Button_ClearCookies);
         Reporter.log("Click 'clear cookies' button");
         Thread.sleep(2000);
     }
@@ -1268,7 +1268,7 @@ public class Homepage {
      * Verify debug window appears.
      */
     public void verifyDebugWindowAppears() {
-        int count = cs.findElementsByXPath(Section_Debug_View).size();
+        int count = wd.findElementsByXPath(Section_Debug_View).size();
         if (count == 1) {
             Reporter.log("Pass: Debug window is visible");
         } else {
