@@ -27,6 +27,7 @@
 
     <listeners>
         <listener class-name="com.nbcuni.test.webdriver.CustomWebDriverExceptionListener" />
+		<!-- listener class-name="com.nbcuni.test.webdriver.SauceLabsListener"/-->
     </listeners>
 
 </suite>
